@@ -3,12 +3,13 @@
     <head>
         <!-- Load d3.js -->
         <script src="https://d3js.org/d3.v7.js"></script>
+        <link rel="stylesheet" href="stylesheet.css">
     </head>
 
     <body>
 
        
-
+        
         <svg width="600", height="400">
         </svg>
 
@@ -16,7 +17,7 @@
             var mySvg = d3.select("svg");
             var background = mySvg.append("g").attr("id", "background");
             var foreground = mySvg.append("g").attr("id", "foreground");
-            var tooltip_layer = mySvg.append("g").attr("id", "tooltip_layer");
+            var tooltip_layer = mySvg.append("g").attr("id", "tooltip_layer").style("visibility", "hidden");
 
 
             foreground
@@ -36,28 +37,57 @@
             .style("fill", "purple");
 
             tooltip_layer
+            .append("rect")
+            .attr("id", "tooltip_background")
+            .attr("x", "0")
+            .attr("y", "0")
+            .attr("width", "150")
+            .attr("height", "100")
+            .style("fill", "white")
+            .style("stroke", "black")
+            .style("stroke-width", "3");
+
+            var tl = tooltip_layer
             .append("text")
             .attr("id", "tooltip")
             .attr("x", "0")
-            .attr("y", "0")
+            .attr("y", "15px");
+            tl
+            .append("tspan")
+            .attr("x", "0")
+            .attr("dy", "1.4em")
             .text("This is a tooltip")
-            .style("visibility", "hidden");
+            tl
+            .append("tspan")
+            .attr("x", "0")
+            .attr("dy", "1.4em")
+            .text("New line");
 
             var my_rect = d3.select("#ttrect");
 
             my_rect.on("mouseover", function(e) {
-                return d3.select("#tooltip")
+                return d3.select("#tooltip_layer")
                 .style("visibility", "visible");
             });
 
-            my_rect.on("mousemove", function(e) {
-                return d3.select("#tooltip")
-                .attr("x", e.pageX)
-                .attr("y", e.pageY);
-            });
+            my_rect.on("mousemove", function(e){
+                var xloc = e.pageX;
+                var yloc = e.pageY;
+                var translation_def = "translate(" + xloc + "," + yloc + ")";
+
+
+                return d3.select("#tooltip_layer")
+                .attr("transform", translation_def);
+            })
+
+          //  my_rect.on("mousemove", function(e) {
+           //     return d3.select("#tooltip_layer")
+            //    .attr("x", e.pageX)
+             //   .attr("y", e.pageY);
+           // });
 
             my_rect.on("mouseout", function(e){ 
-                return d3.select("#tooltip")
+                return d3.select("#tooltip_layer")
                 .style("visibility", "hidden");
             });
         </script>
