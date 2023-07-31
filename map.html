@@ -21,19 +21,13 @@
 
         <script>
             var map = L.map('map').setView([49.767122, -7.556727], 20);
-            var polylayer = L.geoJson().addTo(map);
-            //var json = JSON.parse('./contiles.geojson'); //with path
             var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/contiles.geojson";
-
-         //   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          //      maxZoom: 19,
-           //     attribution: 'OpenStreetMap'
-           // }).addTo(map);
-
-           var tooltip = L.tooltip()
+            var tooltip = L.tooltip()
                 .setLatLng([49.767122, -7.556727])
                 .setContent('Hello world!<br />This is a nice tooltip.')
                 .addTo(map);
+
+            // styling / formatting functions    
 
             function getRegionColour(r) {
                 switch (r) {
@@ -60,7 +54,9 @@
                     style: styler,
                     onEachFeature: function(feature, layer) {
                         layer.on("mouseover", function() {$(".leaflet-tooltip").css("display","block")});
-                        layer.on("mousemove", function(e) {tooltip.setLatLng(e.latlng)});
+                        layer.on("mousemove", function(e) {
+                            tooltip.setLatLng(e.latlng).setContent(feature.properties.Region)
+                        });
                         layer.on("mouseout", function() {$(".leaflet-tooltip").css("display","none")});
                     }
                     }
