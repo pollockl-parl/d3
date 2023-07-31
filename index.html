@@ -1,96 +1,70 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
     <head>
-        <!-- Load d3.js -->
-        <script src="https://d3js.org/d3.v7.js"></script>
-        <link rel="stylesheet" href="stylesheet.css">
+
+        <!-- load styles-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+        <link rel="stylesheet" href="styles.css">
+
+        <!-- load leaflet -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
     </head>
 
     <body>
 
-       
-        
-        <svg width="600", height="400">
-        </svg>
+        <div id="map"></div>
 
         <script>
-            var mySvg = d3.select("svg");
-            var background = mySvg.append("g").attr("id", "background");
-            var foreground = mySvg.append("g").attr("id", "foreground");
-            var tooltip_layer = mySvg.append("g").attr("id", "tooltip_layer").style("visibility", "hidden");
+            var map = L.map('map').setView([49.767122, -7.556727], 20);
+            var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/contiles.geojson";
+            var tooltip = L.tooltip()
+                .setLatLng([49.767122, -7.556727])
+                .setContent('Hello world!<br />This is a nice tooltip.')
+                .addTo(map);
 
+            // styling / formatting functions    
 
-            foreground
-            .append("circle")
-            .attr("cx", "300")
-            .attr("cy", "200")
-            .attr("r", "40")
-            .style("fill", "green");
-            // this should appear behind the circle even though we drew it after because of the order of groups above
-            background
-            .append("rect")
-            .attr("id", "ttrect")
-            .attr("x", "300")
-            .attr("y", "200")
-            .attr("width", "200")
-            .attr("height", "200")
-            .style("fill", "purple");
+            function getRegionColour(r) {
+                switch (r) {
+                    case "Northern Ireland": return "green";
+                    case "Wales" : return "yellow";
+                    case "Scotland" : return "blue";
+                    default : return "purple";
+                }
+            }
 
-            tooltip_layer
-            .append("rect")
-            .attr("id", "tooltip_background")
-            .attr("x", "0")
-            .attr("y", "0")
-            .attr("width", "150")
-            .attr("height", "100")
-            .style("fill", "white")
-            .style("stroke", "black")
-            .style("stroke-width", "3");
+            function styler(feature) {
+                return {
+                    fillColor: getRegionColour(feature.properties.Region),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 1
+                };
+            }
 
-            var tl = tooltip_layer
-            .append("text")
-            .attr("id", "tooltip")
-            .attr("x", "0")
-            .attr("y", "15px");
-            tl
-            .append("tspan")
-            .attr("x", "0")
-            .attr("dy", "1.4em")
-            .text("This is a tooltip")
-            tl
-            .append("tspan")
-            .attr("x", "0")
-            .attr("dy", "1.4em")
-            .text("New line");
+            $.getJSON(map_url, function(data) {
+                L.geoJson(data, {
+                    style: styler,
+                    onEachFeature: function(feature, layer) {
+                        layer.on("mouseover", function() {$(".leaflet-tooltip").css("display","block")});
+                        layer.on("mousemove", function(e) {
+                            tooltip.setLatLng(e.latlng).setContent(feature.properties.Region)
+                        });
+                        layer.on("mouseout", function() {$(".leaflet-tooltip").css("display","none")});
+                    }
+                    }
+                    
+                ).addTo(map);
+                });
 
-            var my_rect = d3.select("#ttrect");
-
-            my_rect.on("mouseover", function(e) {
-                return d3.select("#tooltip_layer")
-                .style("visibility", "visible");
-            });
-
-            my_rect.on("mousemove", function(e){
-                var xloc = e.pageX;
-                var yloc = e.pageY;
-                var translation_def = "translate(" + xloc + "," + yloc + ")";
-
-
-                return d3.select("#tooltip_layer")
-                .attr("transform", translation_def);
-            })
-
-          //  my_rect.on("mousemove", function(e) {
-           //     return d3.select("#tooltip_layer")
-            //    .attr("x", e.pageX)
-             //   .attr("y", e.pageY);
-           // });
-
-            my_rect.on("mouseout", function(e){ 
-                return d3.select("#tooltip_layer")
-                .style("visibility", "hidden");
-            });
         </script>
-
     </body>
+
 </html>
