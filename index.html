@@ -22,6 +22,7 @@
 
         <script>
             var map = L.map('map').setView([49.767122, -7.556727], 20);
+            // without _ is EPSG 3857; wiith _ is WGS84
             var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2019.geojson";
             var tooltip = L.tooltip()
                 .setLatLng([49.767122, -7.556727])
