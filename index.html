@@ -18,10 +18,11 @@
     <body>
 
         <div id="map"></div>
+        <button class="btn reset-btn" id="all">Reset</button>
 
         <script>
             var map = L.map('map').setView([49.767122, -7.556727], 20);
-            var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/contiles.geojson";
+            var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results.geojson";
             var tooltip = L.tooltip()
                 .setLatLng([49.767122, -7.556727])
                 .setContent('Hello world!<br />This is a nice tooltip.')
@@ -63,8 +64,15 @@
                     
                 ).addTo(map);
                 });
+        
+                document.getElementById("all").addEventListener('click', function (event) {
 
+                    map.setView([49.767122, -7.556727], 20)
+
+                    //map.eachLayer(function (layer) {
+                    //     map.removeLayer(layer);
+                    //   });
+                });        
         </script>
     </body>
-
 </html>
