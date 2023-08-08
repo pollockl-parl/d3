@@ -12,6 +12,8 @@
         <!-- load leaflet -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <!-- Load d3.js -->
+        <script src="https://d3js.org/d3.v7.js"></script>
 
     </head>
 
@@ -21,6 +23,10 @@
         <option value="2019">2019</option>
         <option value="2017">2017</option>
         </select>
+
+        <div id="blurb" style="float:right;">
+            <p>2019 by default</p>
+        </div>
 
         <div id="map"></div>
 
@@ -37,7 +43,9 @@
             var map_url_2019 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2019.geojson";
             var map_url_2017 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2017.geojson";
 
-            var tooltip = L.tooltip()
+            var tooltip = L.tooltip({interactive: false,
+                                     permanent: true
+                })
                 .setLatLng([49.767122, -7.556727])
                 .setContent('Hello world!<br />This is a nice tooltip.')
                 .addTo(map);
@@ -51,9 +59,12 @@
                     L.geoJson(data, {
                             style: styler,
                             onEachFeature: function(feature, layer) {
-                                layer.on("mouseover", function() {$(".leaflet-tooltip").css("display","block")});
+                                layer.on("mouseover", function(e) {
+                                    $(".leaflet-tooltip").css("display","block");
+                                    tooltip.setContent(feature.properties.result);
+                                });
                                 layer.on("mousemove", function(e) {
-                                    tooltip.setLatLng(e.latlng).setContent(feature.properties.result)
+                                   tooltip.setLatLng(e.latlng);
                                 });
                                 layer.on("mouseout", function() {$(".leaflet-tooltip").css("display","none")});
                             }
@@ -85,7 +96,7 @@
                     case "Con": return "#00008B";
                     case "Lab" : return "#8B0000";
                     case "SNP" : return "#8B8000";
-                    case "LD" : return "d#ff8c00";
+                    case "LD" : return "#FF8C00";
                     case "DUP" : return "#D46A4C"
                     default : return "darkgrey";
                 }
@@ -94,9 +105,9 @@
             function getBorderWeight(b) {
 
                 if (b.includes("gain")) {
-                    return 3
+                    return 4.0
                 } else {
-                    return 1
+                    return 1.0
                 }
             }
             
@@ -106,24 +117,28 @@
                     weight: getBorderWeight(feature.properties.result),
                     opacity: 1,
                     color: getPartyBorderColour(feature.properties.first_party),
-                    //dashArray: '3',
-                    fillOpacity: 1
+                    fillOpacity: 1,
+                    smoothFactor: 0.5,
                 };
             }
         
             document.getElementById("election2019").addEventListener('click', function (event) {
 
-                map.setView([0.3149999 , 0.41 ],10);
+            //    map.setView([0.3149999 , 0.41 ],10);
                 map.removeLayer(layerGroup2017);
                 layerGroup2019.addTo(map);
+
+                d3.select("#blurb").select("p").text("It's 2019!")
 
                 });   
             
             document.getElementById("election2017").addEventListener('click', function (event) {
 
-                map.setView([0.3149999 , 0.41 ],10);
+            //     map.setView([0.3149999 , 0.41 ],10);
                 map.removeLayer(layerGroup2019);
                 layerGroup2017.addTo(map);
+
+                d3.select("#blurb").select("p").text("It's 2017!")
 
                 }); 
                 
