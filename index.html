@@ -16,30 +16,59 @@
     </head>
 
     <body>
-        <label for="cars">Choose an election:</label>
-        <select name="cars" id="cars">
+        <label for="elections">Choose an election:</label>
+        <select name="elections" id="elections">
         <option value="2019">2019</option>
         <option value="2017">2017</option>
         </select>
 
         <div id="map"></div>
 
-        <button class="btn reset-btn" id="all">Reset</button>
+        <button class="btn reset-btn" id="election2017">2017</button>
+        <button class="btn reset-btn" id="election2019">2019</button>
 
         <script>
           
             // MUST BE WGS84 - transformed and set in SF
              var map = L.map('map').setView([0.3149999 , 0.41 ],10);
              var layerGroup2019 = new L.layerGroup();
+             var layerGroup2017 = new L.layerGroup();
     
-            var map_url = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2019.geojson";
+            var map_url_2019 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2019.geojson";
+            var map_url_2017 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2017.geojson";
+
             var tooltip = L.tooltip()
                 .setLatLng([49.767122, -7.556727])
                 .setContent('Hello world!<br />This is a nice tooltip.')
                 .addTo(map);
+            
+
+            // layer function
+            createLayers = function(map_url, layer2add) {
+
+                $.getJSON(map_url, function(data) {
+                    var features =
+                    L.geoJson(data, {
+                            style: styler,
+                            onEachFeature: function(feature, layer) {
+                                layer.on("mouseover", function() {$(".leaflet-tooltip").css("display","block")});
+                                layer.on("mousemove", function(e) {
+                                    tooltip.setLatLng(e.latlng).setContent(feature.properties.result)
+                                });
+                                layer.on("mouseout", function() {$(".leaflet-tooltip").css("display","none")});
+                            }
+                            }
+                            
+                        );
+                    layer2add.addLayer(features)
+                    layer2add.addTo(map);
+                });
+            }    
+
+            createLayers(map_url_2019, layerGroup2019);
+            createLayers(map_url_2017, layerGroup2017);
 
             // styling / formatting functions    
-
             function getPartyColour(r) {
                 switch (r) {
                     case "Con": return "blue";
@@ -71,7 +100,6 @@
                 }
             }
             
-
             function styler(feature) {
                 return {
                     fillColor: getPartyColour(feature.properties.first_party),
@@ -82,34 +110,24 @@
                     fillOpacity: 1
                 };
             }
-            
-            $.getJSON(map_url, function(data) {
-              var features2019 =
-              L.geoJson(data, {
-                    style: styler,
-                    onEachFeature: function(feature, layer) {
-                        layer.on("mouseover", function() {$(".leaflet-tooltip").css("display","block")});
-                        layer.on("mousemove", function(e) {
-                            tooltip.setLatLng(e.latlng).setContent(feature.properties.result)
-                        });
-                        layer.on("mouseout", function() {$(".leaflet-tooltip").css("display","none")});
-                    }
-                    }
-                    
-                );
-                layerGroup2019.addLayer(features2019)
-                layerGroup2019.addTo(map);
-                });
         
-                document.getElementById("all").addEventListener('click', function (event) {
+            document.getElementById("election2019").addEventListener('click', function (event) {
 
-                    map.setView([0.3149999 , 0.41 ],10);
-                    map.hideLayer(layerGroup2019);
+                map.setView([0.3149999 , 0.41 ],10);
+                map.removeLayer(layerGroup2017);
+                layerGroup2019.addTo(map);
 
-                    //map.eachLayer(function (layer) {
-                    //     map.removeLayer(layer);
-                    //   });
-                });        
+                });   
+            
+            document.getElementById("election2017").addEventListener('click', function (event) {
+
+                map.setView([0.3149999 , 0.41 ],10);
+                map.removeLayer(layerGroup2019);
+                layerGroup2017.addTo(map);
+
+                }); 
+                
+                
         </script>
     </body>
 </html>
