@@ -86,10 +86,6 @@
                     layer2add.addTo(map);
                 });
             }    
-
-            createLayers(map_url_2019, layerGroup2019);
-            createLayers(map_url_2017, layerGroup2017);
-
             // styling / formatting functions    
             function getPartyColour(r) {
                 switch (r) {
@@ -132,7 +128,8 @@
                     smoothFactor: 0.5,
                 };
             }
-        
+       
+            // add handlers to buttons
             document.getElementById("election2019").addEventListener('click', function (event) {
 
                 map.removeLayer(layerGroup2017);
@@ -142,8 +139,8 @@
                     .then((data) => {
                         d3.select("#blurb").select("#texttarget").html(data);
                     })
-            });   
-            
+                });   
+
             document.getElementById("election2017").addEventListener('click', function (event) {
 
                 map.removeLayer(layerGroup2019);
@@ -154,7 +151,16 @@
                     .then((data) => {
                         d3.select("#blurb").select("#texttarget").html(data);
                     })
-            }); 
+                }); 
+
+            // BUILD
+            createLayers(map_url_2019, layerGroup2019);
+            createLayers(map_url_2017, layerGroup2017);
+            fetch("text_summaries/text_2019.txt")
+                    .then(response => response.text())
+                    .then((data) => {
+                        d3.select("#blurb").select("#texttarget").html(data);
+                    });
 
         </script>
     </body>
