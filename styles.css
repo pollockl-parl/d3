@@ -5,3 +5,11 @@
 .leaflet-tooltip {
     display: none;
   }
+
+  .row {
+    display: flex;
+  }
+  
+  .column {
+    flex: 50%;
+  }

@@ -20,20 +20,26 @@
     </head>
 
     <body>
-        <label for="elections">Choose an election:</label>
-        <select name="elections" id="elections">
-        <option value="2019">2019</option>
-        <option value="2017">2017</option>
-        </select>
+       
+        <div class="row">
 
-        <div id="blurb" style="float:right;">
-            <p>2019 by default</p>
+            <div class="column">
+                <div id="blurb" style="float:right;">
+                    <div id="texttarget"></div> 
+                </div>
+            </div>
+           
+            <div clas="column">
+                <div id="map_app" style="float:left;">
+
+                    <div id="map"></div>
+                    <button class="btn reset-btn" id="election2017">2017</button>
+                    <button class="btn reset-btn" id="election2019">2019</button>
+
+                </div>
+            </div>
         </div>
-
-        <div id="map"></div>
-
-        <button class="btn reset-btn" id="election2017">2017</button>
-        <button class="btn reset-btn" id="election2019">2019</button>
+        
 
         <script>
           
@@ -137,7 +143,7 @@
                 fetch("text_summaries/text_2019.txt")
                     .then(response => response.text())
                     .then((data) => {
-                        d3.select("#blurb").select("p").text(data)
+                        d3.select("#blurb").select("#texttarget").html(data)
                     })
                
 
