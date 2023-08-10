@@ -82,7 +82,7 @@
                             }
                             
                         );
-                    layer2add.addLayer(features)
+                    layer2add.addLayer(features);
                     layer2add.addTo(map);
                 });
             }    
@@ -140,9 +140,9 @@
                 fetch("text_summaries/text_2019.txt")
                     .then(response => response.text())
                     .then((data) => {
-                        d3.select("#blurb").select("#texttarget").html(data)
+                        d3.select("#blurb").select("#texttarget").html(data);
                     })
-                });   
+            });   
             
             document.getElementById("election2017").addEventListener('click', function (event) {
 
@@ -152,9 +152,10 @@
                 fetch("text_summaries/text_2017.txt")
                     .then(response => response.text())
                     .then((data) => {
-                        d3.select("#blurb").select("#texttarget").html(data)
+                        d3.select("#blurb").select("#texttarget").html(data);
                     })
-                }); 
+            }); 
+
         </script>
     </body>
 </html>
