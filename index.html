@@ -15,6 +15,8 @@
         <!-- Load d3.js -->
         <script src="https://d3js.org/d3.v7.js"></script>
 
+        <base href="https://raw.githubusercontent.com/pollockl-parl/d3/main/"/>
+
     </head>
 
     <body>
@@ -44,8 +46,10 @@
           //  var map_url_2017 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2017.geojson";
 
 
-            var map_url_2017 = "/results_files/results_2017.geojson";
-            var map_url_2019 = "/results_files/results_2019.geojson";
+            var map_url_2017 = "results_files/results_2017.geojson";
+            var map_url_2019 = "results_files/results_2019.geojson";
+            var summary_url_2019 = "text_summaries/text_2019.txt";
+
             var tooltip = L.tooltip({interactive: false,
                                      permanent: true
                 })
@@ -130,8 +134,12 @@
             //    map.setView([0.3149999 , 0.41 ],10);
                 map.removeLayer(layerGroup2017);
                 layerGroup2019.addTo(map);
-
-                d3.select("#blurb").select("p").text("It's 2019!")
+                fetch("text_summaries/text_2019.txt")
+                    .then(response => response.text())
+                    .then((data) => {
+                        d3.select("#blurb").select("p").text(data)
+                    })
+               
 
                 });   
             
