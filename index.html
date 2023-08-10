@@ -40,7 +40,6 @@
             </div>
         </div>
         
-
         <script>
           
             // MUST BE WGS84 - transformed and set in SF
@@ -63,7 +62,6 @@
                 .setContent('Hello world!<br />This is a nice tooltip.')
                 .addTo(map);
             
-
             // layer function
             createLayers = function(map_url, layer2add) {
 
@@ -137,7 +135,6 @@
         
             document.getElementById("election2019").addEventListener('click', function (event) {
 
-            //    map.setView([0.3149999 , 0.41 ],10);
                 map.removeLayer(layerGroup2017);
                 layerGroup2019.addTo(map);
                 fetch("text_summaries/text_2019.txt")
@@ -145,21 +142,19 @@
                     .then((data) => {
                         d3.select("#blurb").select("#texttarget").html(data)
                     })
-               
-
                 });   
             
             document.getElementById("election2017").addEventListener('click', function (event) {
 
-            //     map.setView([0.3149999 , 0.41 ],10);
                 map.removeLayer(layerGroup2019);
                 layerGroup2017.addTo(map);
 
-                d3.select("#blurb").select("p").text("It's 2017!")
-
+                fetch("text_summaries/text_2017.txt")
+                    .then(response => response.text())
+                    .then((data) => {
+                        d3.select("#blurb").select("#texttarget").html(data)
+                    })
                 }); 
-                
-                
         </script>
     </body>
 </html>
