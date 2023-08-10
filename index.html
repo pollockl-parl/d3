@@ -30,7 +30,7 @@
                 </div>
             </div>
            
-            <div clas="column">
+            <div class="column">
                 <div id="map_app" style="float:left;">
 
                     <div id="map"></div>
@@ -47,23 +47,40 @@
              var map = L.map('map').setView([0.3149999 , 0.41 ],10);
              var layerGroup2019 = new L.layerGroup();
              var layerGroup2017 = new L.layerGroup();
-    
-          //  var map_url_2019 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2019.geojson";
-          //  var map_url_2017 = "https://raw.githubusercontent.com/pollockl-parl/d3/main/results_2017.geojson";
 
-
-            var map_url_2017 = "results_files/results_2017.geojson";
+            // 2019 vars
             var map_url_2019 = "results_files/results_2019.geojson";
             var summary_url_2019 = "text_summaries/text_2019.txt";
+            var summary_2019;
+           
+            // 2017 vars
+            var map_url_2017 = "results_files/results_2017.geojson";
             var summary_url_2017 = "text_summaries/text_2017.txt";
+            var summary_2017;
 
+            // fetch text - also set in the case of 2019
+            fetch("text_summaries/text_2017.txt")
+                    .then(response => response.text())
+                    .then((data) => {
+                        summary_2017 = data;
+                });
+            
+            fetch("text_summaries/text_2019.txt")
+            .then(response => response.text())
+            .then((data) => {
+                summary_2019 = data;
+                d3.select("#blurb").select("#texttarget").html(data);
+                 });
+            
+            // create tooltip
             var tooltip = L.tooltip({interactive: false,
                                      permanent: true
                 })
                 .setLatLng([49.767122, -7.556727])
                 .setContent('Hello world!<br />This is a nice tooltip.')
                 .addTo(map);
-            
+
+            // FUNCS
             // layer function
             createLayers = function(map_url, layer2add) {
 
@@ -136,33 +153,21 @@
 
                 map.removeLayer(layerGroup2017);
                 layerGroup2019.addTo(map);
-                fetch("text_summaries/text_2019.txt")
-                    .then(response => response.text())
-                    .then((data) => {
-                        d3.select("#blurb").select("#texttarget").html(data);
-                    })
+                d3.select("#blurb").select("#texttarget").html(summary_2017);
                 });   
 
             document.getElementById("election2017").addEventListener('click', function (event) {
 
                 map.removeLayer(layerGroup2019);
                 layerGroup2017.addTo(map);
-
-                fetch("text_summaries/text_2017.txt")
-                    .then(response => response.text())
-                    .then((data) => {
-                        d3.select("#blurb").select("#texttarget").html(data);
-                    })
+                d3.select("#blurb").select("#texttarget").html(summary_2019);
                 }); 
 
             // BUILD
+            d3.select("#blurb").select("#texttarget").html(summary_2019);
             createLayers(map_url_2019, layerGroup2019);
             createLayers(map_url_2017, layerGroup2017);
-            fetch("text_summaries/text_2019.txt")
-                    .then(response => response.text())
-                    .then((data) => {
-                        d3.select("#blurb").select("#texttarget").html(data);
-                    });
+           
 
         </script>
     </body>
